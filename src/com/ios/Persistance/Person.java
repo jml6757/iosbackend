@@ -7,13 +7,13 @@ public class Person {
 	
 	String name;
 	String ID;
-	ArrayList<amazonProduct> favorites;
-	ArrayList<amazonProduct> suggestionList;
+	ArrayList<ItemIphoneDisplay> favorites;
+	ArrayList<ItemIphoneDisplay> suggestionList;
 	HashMap<String,Integer> attributes;
 		
 	public Person(String ID){
 		name = ID;
-		favorites = new ArrayList<amazonProduct>();
+		favorites = new ArrayList<ItemIphoneDisplay>();
 		attributes = new HashMap<String,Integer>();
 	}
 
