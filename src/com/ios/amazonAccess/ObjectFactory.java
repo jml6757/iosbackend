@@ -46,4 +46,15 @@ public class ObjectFactory {
 		itemLookup.setAWSAccessKeyId(AWS_ACCESS_KEY_ID);
 		return itemLookup;
 	}
+	
+	public BrowseNodeLookupRequest createBrowseNodeLookupRequest() {
+		return new BrowseNodeLookupRequest();
+	}
+	
+	public BrowseNodeLookup createBrowseNodeLookup() {
+		BrowseNodeLookup browseNodeLookup = new BrowseNodeLookup();
+		browseNodeLookup.setAssociateTag(ASSOCIATE_TAG);
+		browseNodeLookup.setAWSAccessKeyId(AWS_ACCESS_KEY_ID);
+		return browseNodeLookup;
+	}
 }

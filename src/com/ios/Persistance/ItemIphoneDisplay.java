@@ -1,17 +1,31 @@
 package com.ios.Persistance;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class ItemIphoneDisplay {
+public class ItemIphoneDisplay implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3922446328540125649L;
+
 	public class SimpleItem {
+		String ASIN;
 		String title;
 		String productLink;
 		String imageLink;
 		String price;
 		String rating;
 		
+		public String getASIN(){
+			return ASIN;
+		}
+		public void setASIN(String val){
+			ASIN = val;
+			
+		}
 		public String getTitle() {
 			return title;
 		}

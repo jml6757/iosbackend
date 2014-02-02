@@ -14,4 +14,7 @@
   <servlet-name> T3 REST Service </servlet-name>
 <url-pattern>/rest/*</url-pattern>
   </servlet-mapping>
+ <listener>
+    <listener-class>com.ios.Persistance.persistData</listener-class>
+</listener>
 </web-app>
