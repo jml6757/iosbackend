@@ -11,13 +11,17 @@ public class ItemIphoneDisplay implements Serializable {
 	 */
 	private static final long serialVersionUID = -3922446328540125649L;
 
-	public class SimpleItem {
+	public class SimpleItem implements Serializable{
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -5102069943621852059L;
 		String ASIN;
 		String title;
 		String productLink;
 		String imageLink;
 		String price;
-		String rating;
+		String searchTerms;
 		
 		public String getASIN(){
 			return ASIN;
@@ -58,12 +62,15 @@ public class ItemIphoneDisplay implements Serializable {
 			this.price = val;
 		}
 		
-		public String getRating() {
-			return rating;
+		public void setSearchTerms(String origTerm) {
+			searchTerms = origTerm;
+			// TODO Auto-generated method stub
+			
 		}
-		
-		public void setRating(String val) {
-			this.rating = val;
+		public String getSearchTerms() {
+			return searchTerms;
+			// TODO Auto-generated method stub
+			
 		}
 		
 	}

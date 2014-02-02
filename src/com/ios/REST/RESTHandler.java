@@ -46,6 +46,8 @@ public Response createPerson(String info){
 		keyValue = message[j].split("=");
 		System.out.println(keyValue.length);
 		attr.put(keyValue[0], Integer.parseInt(keyValue[1]) );
+		
+		
 	}
 	
 	//create a person
@@ -69,22 +71,43 @@ public Response createPerson(String info){
 public Response addFavorite(String info){
 	String[] message = info.split("\\|");
 	//create a person
-	persistance.addFavorite(message[0], message[1], message[2]);
+	persistance.addFavorite(message[0].trim(), message[1].trim(), message[2].trim());
 	//add the new favorite information to the person.
 	// do this if the person exists.
 	return Response.status(201).entity("Saved").build();
 	//if the person does not exist return a bad request or something.
 	
 	
+	
 }
 	
-
+//---------------------------------------------------------------------/POSTFavoriteDelete----- (done)- delete favorite
+@POST
+@Path("/POSTFavoriteDelete")
+@Consumes(MediaType.TEXT_PLAIN)
+public Response deleteFavorite(String info){
+	String[] message = info.split("\\|");
+	//create a person
+	persistance.getPerson(message[0],message[1]).removeFavorite(message[2]);
+	System.out.println("Delete called");
+	//add the new favorite information to the person.
+	// do this if the person exists.
+	return Response.status(201).entity("Saved").build();
+	//if the person does not exist return a bad request or something.
+	
+	
+	
+}
 //---------------------------------------------------------------------/POSTYesOrNoInfo-----
 @POST
 @Path("/POSTYesOrNoInfo")
-@Consumes(MediaType.APPLICATION_JSON)
-public Response updatePreferenceInfo(Track track){
-	
+@Consumes(MediaType.TEXT_PLAIN)
+public Response updatePreferenceInfo(String info){
+	String[] message = info.split("\\|");
+	//create a person
+	persistance.getPerson(message[0],message[1]).updateKeywords(message[2], Boolean.parseBoolean(message[3]) );
+	System.out.println("we got a call for : " + message[3]);
+	//add the new favorite information to the person.
 	return Response.status(201).entity("Saved").build();
 	
 }
@@ -94,7 +117,7 @@ public Response updatePreferenceInfo(Track track){
 @Path("/GETAttributes/{i}")
 @Produces(MediaType.TEXT_PLAIN)
 public String getAttributes(@PathParam("i") String i){
-	System.out.println("I got a message" + i);
+	System.out.println("I got a message " + i);
 	String[] ids = i.split("\\|");
 	for(String str : persistance.getPeople().keySet()){
 		System.out.println(str);
@@ -107,6 +130,7 @@ public String getAttributes(@PathParam("i") String i){
 	System.out.println(persistance.getPerson(ids[0],ids[1]).getID());
 	HashMap<String,Integer> attri =persistance.getPerson(ids[0],ids[1]).getAttributes();
 	StringBuilder response = new StringBuilder();
+	
 	for(String key : attri.keySet()){
 		response.append(key);
 		response.append("=");
@@ -130,20 +154,24 @@ public String getFavorite(@PathParam("i") String i){
 	StringBuilder response = new StringBuilder();
 	for(ItemIphoneDisplay.SimpleItem item :persistance.getPeople().get(ids[0]).get(ids[1]).getFavorites().getItemList()){
 		response.append("ASIN="+item.getASIN());
+		response.append("|");
 		response.append("title="+item.getTitle());
+		response.append("|");
 		response.append("productLink="+item.getProductLink());
+		response.append("|");
 		response.append("imageLink="+item.getImageLink());
+		response.append("|");
 		response.append("price="+item.getPrice());
-		response.append("rating="+item.getRating());
 		response.append("|");
 	}
-	response.deleteCharAt(response.length()-1);
+	if(response.length()>1)
+		response.deleteCharAt(response.length()-1);
 	System.out.println(response.toString());
 	return response.toString();
 }
 
 
-//---------------------------------------------------------------------/GETSuggestion/{i}-----
+//---------------------------------------------------------------------/GETSuggestion/{i}-----(kindaDone)
 @GET
 @Path("/GETSuggestion/{i}")
 @Produces(MediaType.TEXT_XML)
@@ -151,18 +179,27 @@ public String getSuggestion(@PathParam("i") String i){
 	//parse header for keywords TEMPORARY SHOULD GO TO AI WHEN DONE
 	String[] ids = i.split("\\|");
 	
-	ItemIphoneDisplay iphoneDisplay = TestRequestHandler.testKeywordSearch();
-	
-	for (ItemIphoneDisplay.SimpleItem simpleItem : iphoneDisplay.getItemList()) {
-
-		//product.setAttribute("Price" );
-		/*
-		System.out.println(simpleItem.getTitle());
-		System.out.println(simpleItem.getProductLink());
-		System.out.println(simpleItem.getImageLink());
-		*/
-	}
-	return ids[0];
+	System.out.println("I got AppID: " + ids[0] + " ID: " + ids[1]);
+	StringBuilder response = new StringBuilder();
+	System.out.println("Found Person For Suggestion " + persistance.getPeople().get(ids[0]).get(ids[1]).getID());
+	persistance.getPeople().get(ids[0]).get(ids[1]).doItemSearch();
+	for(ItemIphoneDisplay.SimpleItem item :persistance.getPeople().get(ids[0]).get(ids[1]).getPendingSuggestions().getItemList()){
+		
+		response.append("ASIN="+item.getASIN());
+		response.append("|");
+		response.append("title="+item.getTitle());
+		response.append("|");
+		response.append("productLink="+item.getProductLink());
+		response.append("|");
+		response.append("imageLink="+item.getImageLink());
+		response.append("|");
+		response.append("price="+item.getPrice());
+		response.append("|");
+		
+		}
+	response.deleteCharAt(response.length()-1);
+	System.out.println(response.toString());
+	return response.toString();
 }
 	
 }

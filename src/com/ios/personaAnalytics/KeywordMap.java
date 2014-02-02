@@ -12,11 +12,13 @@ public class KeywordMap implements Serializable{
 	 */
 	private static final long serialVersionUID = -618445864684191777L;
 
-	private static String keywords = "Harry Potter,travel,electronics,books,lord of the rings,sports,"
-			+ "soccer,basketball,shirts,shoes,dresses,kanye west,posters,batman,paint,kindle,computer,"
-			+ "phone,bag,hiking,backpack,xbox,playstation,tickets,movie tickets,the beatles,Justin Beiber,"
-			+ "makeup,purse,cooking utensils,oven,spices,legos,toy,action figures,paint,colors,poster,theater,"
-			+ "autograph,magazine";
+	private static String keywords = "tablet,computer,phone,camera,home audio,television,harry potter,"
+			+ "lord of the rings,magazine,game of thrones,fiction,novel,travel,bag,backpack,luggage,europe,"
+			+ "adventure,hiking,basketball,sports,football,outdoor,fitness,xbox,sony,playstation,nintendo,"
+			+ "controller,microsoft,movie tickets,theater,autograph,dvd bluray,collection,poster,rock music,"
+			+ "classical music,kanye west,jazz,hip hop,soundtrack,shirts,shoes,dresses,makeup,accessories,"
+			+ "tie,cooking utensils,spices,oven,cookbooks,candy,recipe,paint,colors,painting,art,sketch,statue,"
+			+ "legos,toy,action figures,doll,puzzle,game";
 	
 	private List<KeyValue> keyMap;
 	
@@ -24,6 +26,7 @@ public class KeywordMap implements Serializable{
 	 * Takes in a comma-separated string of keywords
 	 */
 	public KeywordMap(String keywords) {
+		
 		keyMap = new ArrayList<KeyValue>();
 		String[] keywordArray = keywords.split(",");
 		for (String keyword : keywordArray) {
@@ -99,10 +102,11 @@ public class KeywordMap implements Serializable{
 		}
 	}
 	
-	private class KeyValue implements Comparable<KeyValue>, Serializable {
+	private class KeyValue implements Comparable<KeyValue>,Serializable{
 		/**
+		 * 
 		 */
-		private static final long serialVersionUID = -4270704042432446583L;
+		private static final long serialVersionUID = 2216179007691372898L;
 		private int key;
 		private String value;
 		

@@ -48,10 +48,15 @@ public class TestRequestHandler {
 	public static ItemIphoneDisplay keywordSearchRequestHandler(List<String> keywords) {
 		ItemIphoneDisplay result = new ItemIphoneDisplay();
 		
+		
+		
 		ObjectFactory factory = new ObjectFactory(AWS_ACCESS_KEY_ID, AWS_SECRET_KEY, ASSOCIATE_TAG);
 		AWSECommerceServicePortType port = factory.createAWSECommerceServicePortType();
 		
 		for (String term : keywords) {
+			String origTerm = term;
+			term.replaceAll(",", " ");
+			
 			Items searchResults = AmazonAccessor.detailedKeywordSearch(term, factory, port);
 			ItemIphoneDisplay.SimpleItem simpleItem = result.createSimpleItemInstance();
 			
@@ -64,6 +69,7 @@ public class TestRequestHandler {
 				simpleItem.setProductLink(currItem.getDetailPageURL());
 				simpleItem.setImageLink(currItem.getLargeImage().getURL());
 				simpleItem.setPrice(AmazonUtils.getLowestListedPrice(currItem));
+				simpleItem.setSearchTerms(origTerm);
 				
 				result.getItemList().add(simpleItem);				
 			}

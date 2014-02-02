@@ -35,16 +35,25 @@ public class Person implements Serializable{
 		this.attributes = attributes;
 		keywordMap = new KeywordMap();
 		PersonHelper.updateKeywordMapFromAttributes(keywordMap, attributes);
-		
-		//Start populating the suggestionList with the most gifted on specific BrowseNodes
-		List<String> browseNodeIds = PersonHelper.getRelaventBrowseNodeIDs(attributes);
-		//pendingSuggestions.add(com.ios.amazonAccess.TestRequestHandler.browseNodeMostGiftedItems(browseNodeIds));
 	}
 	
 	public void addFavorite(String ASIN){
-		favorites.getItemList().add((getSuggestedItem(ASIN)));
+		if(!favorites.getItemList().contains(getSuggestedItem(ASIN)))
+			favorites.getItemList().add((getSuggestedItem(ASIN)));
 	}
 
+	public void removeFavorite(String ASIN){
+		for(int i=0; i<favorites.getItemList().size(); i++){
+			System.out.println(favorites.getItemList().get(i).getASIN());
+			System.out.println(ASIN);
+			if(favorites.getItemList().get(i).getASIN().trim().equals(ASIN.trim())){
+				System.out.println("Found something same " + ASIN);
+				favorites.getItemList().remove(i);
+				break;
+			}
+		}
+		
+	}
 	public  ItemIphoneDisplay.SimpleItem getSuggestedItem(String ASIN){
 		return suggestionList.get(ASIN);
 	}
@@ -59,10 +68,18 @@ public class Person implements Serializable{
 		return suggestionList;
 	}
 
-	public Queue<ItemIphoneDisplay> getPendingSuggestions() {
-		return pendingSuggestions;
+	public ItemIphoneDisplay getPendingSuggestions() {
+		//should add to suggestionList
+		ItemIphoneDisplay tmp = pendingSuggestions.remove();
+		for(ItemIphoneDisplay.SimpleItem item : tmp.getItemList()){
+			this.suggestionList.put(item.getASIN(), item);	
+		}
+		return tmp;
 	}
 
+	public void addPendingSuggestions(ItemIphoneDisplay pendingSuggestion){
+		this.pendingSuggestions.add(pendingSuggestion);
+	}
 	public void setPendingSuggestions(Queue<ItemIphoneDisplay> pendingSuggestions) {
 		this.pendingSuggestions = pendingSuggestions;
 	}
@@ -81,6 +98,31 @@ public class Person implements Serializable{
 	
 	public HashMap<String,Integer> getAttributes(){
 		return attributes;
+	}
+	/*
+	 * Extremely intesive call - only call from a background thread when other computation is not going on. Calling this can
+	 * knock out the amazon API server pretty easily, which can kind of fuck with other stuff.
+	 */
+	/*
+	public void populatePendingSuggestionsWithMostGiftedItems() {
+		List<String> browseNodeIds = PersonHelper.getRelaventBrowseNodeIDs(attributes);
+		pendingSuggestions.add(com.ios.amazonAccess.TestRequestHandler.browseNodeMostGiftedItems(browseNodeIds));
+	}
+	*/
+	
+	public void updateKeywords(String ASIN, boolean result) {
+		int modifier = 1;
+		if (!result) {
+			modifier-=2;
+		}
+		System.out.println("modifier is : "+ modifier);
+		ItemIphoneDisplay.SimpleItem simpleItem = suggestionList.get(ASIN);
+		if (simpleItem != null) {
+			String[] keywords = simpleItem.getSearchTerms().split(",");
+			for (String keyword : keywords) {
+				keywordMap.modifyWithSort(keyword, modifier);
+			}
+		}
 	}
 	public ItemIphoneDisplay getFavorites(){
 		return favorites;
@@ -140,7 +182,7 @@ public class Person implements Serializable{
 		map.put("reading", 0);
 		map.put("travelling", 0);
 		map.put("sports", 0);
-		map.put("video games", 0);
+		map.put("videogames", 0);
 		map.put("movies", 0);
 		map.put("music", 0);
 		map.put("fashion", 1);

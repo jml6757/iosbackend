@@ -16,6 +16,8 @@ public class dataModel implements Serializable{
 	
 	protected dataModel(){
 		//deserialize stuff and put ot to the map
+       // people = new HashMap<String,HashMap<String,Person>> ();
+
 		
 		try {
 	        FileInputStream file = new FileInputStream("persistance.sp");
@@ -29,6 +31,7 @@ public class dataModel implements Serializable{
 	        System.err.println("error" + ex);
 	        people = new HashMap<String,HashMap<String,Person>> ();
 	    }
+	    
 		
 
 	}
@@ -66,16 +69,8 @@ public class dataModel implements Serializable{
 	}
 	
 	public Person getPerson(String AppID, String id){
-		for(String str : people.keySet()){
-			System.out.println(str);
-			for(String str2 : people.get(str).keySet()){
-				System.out.println(str2);
-			}
-		}
-		System.out.println("implies we got nothing");
-		System.out.println(people.get(AppID).toString());
-		System.out.println(people.get(AppID).get(id).toString());
 		return people.get(AppID).get(id);
+		
 	}
 	
 	public void addFavorite(String appID, String id, String ASIN ){
@@ -84,5 +79,8 @@ public class dataModel implements Serializable{
 		
 	}
 	
+	public void removeFavorite(String appID,String id, String ASIN){
+		people.get(appID).get(id).removeFavorite(ASIN);
+	}
 	
 }
